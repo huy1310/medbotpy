@@ -20,9 +20,17 @@ from ObjectDetectionServices import ObjectDetectionServices
 from ObjectDetectionViewModel import ObjectDetectionViewModel
 from typing import List
 from pydub import AudioSegment
+from medbot_api.interface import indicate_callback
 app = FastAPI()
 
+# @app.get("/123/123")
+# async def test_callback(name: str):
+#     return {
+#         "ad": 1
+#     }
+
 @app.post("/SpeechToText/convertSpeechIntoText")
+@indicate_callback("SpeechToText") #link sang ben fast_api.py
 async def convertSpeechIntoText(data: UploadFile = File(...)):
     try:
         audio_bytes = await data.read()
@@ -37,8 +45,8 @@ async def convertSpeechIntoText(data: UploadFile = File(...)):
         return {"result": error} 
 
 @app.post("/ObjectDetection/detectObject", response_model=List[ObjectDetectionViewModel])
+@indicate_callback("ObjectDetection") #link sang ben fast_api.py
 async def detectObject(prompt: str, data: UploadFile = File(...)): 
-    print(1)
     try:
         image_bytes = await data.read()
         
